@@ -1,5 +1,9 @@
 Revision history for Perl extension savevars.
 
+0.04  1999-09-07
+	- documented functions
+	- new: dont_write_cfgfile
+
 0.03  1999-05-04
 	- renamed to savevars (former SaveVars)
 

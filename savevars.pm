@@ -1,7 +1,7 @@
 # -*- perl -*-
 
 #
-# $Id: savevars.pm,v 1.6 1999/05/04 18:43:34 eserte Exp $
+# $Id: savevars.pm,v 1.8 1999/09/07 19:10:29 eserte Exp $
 # Author: Slaven Rezic
 #
 # Copyright (C) 1998,1999 Slaven Rezic. All rights reserved.
@@ -14,7 +14,7 @@
 
 package savevars;
 
-$VERSION = "0.03";
+$VERSION = "0.04";
 
 # parts stolen from "vars.pm"
 
@@ -26,6 +26,7 @@ eval {
 
 my @imports;
 my $callpack;
+my $dont_write_cfgfile = 0;
 
 sub import {
     $callpack = caller;
@@ -63,7 +64,7 @@ sub import {
 }
 
 sub cfgfile {
-    my $basename = ($0 =~ /([^\/]+)$/ ? $1 : $0);
+    my $basename = ($0 =~ m|([^/\\]+)$| ? $1 : $0);
     my $cfgfile = eval { (getpwuid($<))[7] } || $ENV{'HOME'} || '';
     $cfgfile . "/.${basename}rc";
 }
@@ -104,8 +105,12 @@ sub writecfg {
     }
 }
 
+sub dont_write_cfgfile {
+    $dont_write_cfgfile = 1;
+}
+
 END {
-    writecfg();
+    writecfg() unless $dont_write_cfgfile;
 }
 
 1;
@@ -131,6 +136,22 @@ script.
 
 The values are stored using the Data::Dumper module, which is already
 installed with perl5.005 and better.
+
+=head1 FUNCTIONS
+
+=head2 cfgfile
+
+Return the pathname of the current configuration file.
+
+=head2 writecfg
+
+Write the variables to the configuration file. This method is called
+at END.
+
+=head2 dont_write_cfgfile
+
+If this function is called, then the configuration file will not be
+written at END.
 
 =head1 AUTHOR
 
