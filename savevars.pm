@@ -1,7 +1,7 @@
 # -*- perl -*-
 
 #
-# $Id: savevars.pm,v 1.8 1999/09/07 19:10:29 eserte Exp $
+# $Id: savevars.pm,v 1.9 2000/10/10 18:34:11 eserte Exp $
 # Author: Slaven Rezic
 #
 # Copyright (C) 1998,1999 Slaven Rezic. All rights reserved.
@@ -14,7 +14,7 @@
 
 package savevars;
 
-$VERSION = "0.04";
+$VERSION = "0.05";
 
 # parts stolen from "vars.pm"
 
@@ -27,6 +27,7 @@ eval {
 my @imports;
 my $callpack;
 my $dont_write_cfgfile = 0;
+my $cfgfile;
 
 sub import {
     $callpack = caller;
@@ -64,9 +65,12 @@ sub import {
 }
 
 sub cfgfile {
-    my $basename = ($0 =~ m|([^/\\]+)$| ? $1 : $0);
-    my $cfgfile = eval { (getpwuid($<))[7] } || $ENV{'HOME'} || '';
-    $cfgfile . "/.${basename}rc";
+    if (!defined $cfgfile) {
+	my $basename = ($0 =~ m|([^/\\]+)$| ? $1 : $0);
+	$cfgfile = eval { (getpwuid($<))[7] } || $ENV{'HOME'} || '';
+	$cfgfile .= "/.${basename}rc";
+    }
+    $cfgfile;
 }
 
 sub writecfg {
@@ -153,11 +157,23 @@ at END.
 If this function is called, then the configuration file will not be
 written at END.
 
+=head1 CAVEATS
+
+cfgfile() uses the $< variable to determine the current home
+directory. This might not be what you want if using setuid scripts.
+
+=head1 BUGS
+
+Because getpwuid() is used, this module will not work very well on
+Windows. Configuration files will be stored in the current drive root
+directory or, if the C<$HOME> environment variable exists, in the
+C<$HOME> directory.
+
 =head1 AUTHOR
 
 Slaven Rezic <eserte@cs.tu-berlin.de>
 
-Copyright (c) 1998,1999 Slaven Rezic. All rights reserved. This
+Copyright (c) 1998,1999,2000 Slaven Rezic. All rights reserved. This
 package is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 

@@ -6,6 +6,6 @@ WriteMakefile
    'NAME'	  => 'savevars',
    'VERSION_FROM' => 'savevars.pm', # finds $VERSION
    'PREREQ_PM'    => {'Data::Dumper' => 0},
-   'dist'         => {'COMPRESS'=>'gzip -9f', 'SUFFIX' => '.gz',
-		      'POSTOP'=>'-$(CHMOD) 644 $(DISTVNAME).tar$(SUFFIX)'},
+#   'dist'         => {'COMPRESS'=>'gzip -9f', 'SUFFIX' => '.gz',
+#		      'POSTOP'=>'-$(CHMOD) 644 $(DISTVNAME).tar$(SUFFIX)'},
 );

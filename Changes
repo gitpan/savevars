@@ -1,5 +1,10 @@
 Revision history for Perl extension savevars.
 
+0.05  2000-10-10
+	- returned value of cfgfile() is cached, so the same cfgfile is used
+          even if $< is changed during the script
+        - CAVEATS and BUGS sections in POD
+
 0.04  1999-09-07
 	- documented functions
 	- new: dont_write_cfgfile
