@@ -1,0 +1,11 @@
+Revision history for Perl extension savevars.
+
+0.03  1999-05-04
+	- renamed to savevars (former SaveVars)
+
+0.02  1999-05-04
+	- made test suite
+
+0.01  1998-08-25
+	- original version
+
