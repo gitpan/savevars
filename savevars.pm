@@ -1,10 +1,10 @@
 # -*- perl -*-
 
 #
-# $Id: savevars.pm,v 1.9 2000/10/10 18:34:11 eserte Exp $
+# $Id: savevars.pm,v 1.12 2001/10/11 07:37:35 eserte Exp $
 # Author: Slaven Rezic
 #
-# Copyright (C) 1998,1999 Slaven Rezic. All rights reserved.
+# Copyright (C) 1998-2001 Slaven Rezic. All rights reserved.
 # This package is free software; you can redistribute it and/or
 # modify it under the same terms as Perl itself.
 #
@@ -14,7 +14,7 @@
 
 package savevars;
 
-$VERSION = "0.05";
+$VERSION = "0.06";
 
 # parts stolen from "vars.pm"
 
@@ -68,6 +68,9 @@ sub cfgfile {
     if (!defined $cfgfile) {
 	my $basename = ($0 =~ m|([^/\\]+)$| ? $1 : $0);
 	$cfgfile = eval { (getpwuid($<))[7] } || $ENV{'HOME'} || '';
+	if ($cfgfile eq '' && $^O eq 'MSWin32') {
+	    $cfgfile = 'C:';
+	}
 	$cfgfile .= "/.${basename}rc";
     }
     $cfgfile;
@@ -76,9 +79,8 @@ sub cfgfile {
 sub writecfg {
     my $cfgfile = cfgfile();
     if (open(CFG, ">$cfgfile")) {
-	my($sym, $ch);
-	foreach $sym (@imports) {
-	    ($ch, $sym) = unpack('a1a*', $sym);
+	foreach my $sym (@imports) {
+	    my($ch, $sym) = unpack('a1a*', $sym);
 	    if ($has_data_dumper) {
 		my($ref, $varname);
 		if ($ch eq "\$") {
@@ -157,6 +159,20 @@ at END.
 If this function is called, then the configuration file will not be
 written at END.
 
+=head1 NOTES
+
+If you want to be nice to your users and do not want to require them
+to install this module, you can use this snippet of code to use the
+savevars or the vars module, whatever is available:
+
+    BEGIN {
+        my @vars = qw($var1 $var2 @var3 %var4);
+        eval           q{ use savevars @vars };
+        if ($@) { eval q{ use vars     @vars } }
+    }
+
+Just put all the variables to be saved into the @vars array.
+
 =head1 CAVEATS
 
 cfgfile() uses the $< variable to determine the current home
@@ -173,7 +189,7 @@ C<$HOME> directory.
 
 Slaven Rezic <eserte@cs.tu-berlin.de>
 
-Copyright (c) 1998,1999,2000 Slaven Rezic. All rights reserved. This
+Copyright (c) 1998-2001 Slaven Rezic. All rights reserved. This
 package is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
