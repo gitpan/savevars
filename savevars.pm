@@ -1,7 +1,7 @@
 # -*- perl -*-
 
 #
-# $Id: savevars.pm,v 1.12 2001/10/11 07:37:35 eserte Exp $
+# $Id: savevars.pm,v 1.13 2002/02/11 00:20:12 eserte Exp $
 # Author: Slaven Rezic
 #
 # Copyright (C) 1998-2001 Slaven Rezic. All rights reserved.
@@ -14,7 +14,7 @@
 
 package savevars;
 
-$VERSION = "0.06";
+$VERSION = "0.07";
 
 # parts stolen from "vars.pm"
 
@@ -79,8 +79,8 @@ sub cfgfile {
 sub writecfg {
     my $cfgfile = cfgfile();
     if (open(CFG, ">$cfgfile")) {
-	foreach my $sym (@imports) {
-	    my($ch, $sym) = unpack('a1a*', $sym);
+	foreach my $_sym (@imports) {
+	    my($ch, $sym) = unpack('a1a*', $_sym);
 	    if ($has_data_dumper) {
 		my($ref, $varname);
 		if ($ch eq "\$") {
